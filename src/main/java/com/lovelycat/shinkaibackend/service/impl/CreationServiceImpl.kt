@@ -25,4 +25,8 @@ class CreationServiceImpl : ServiceImpl<CreationMapper?, Creation?>(), CreationS
     override fun getAllCreations(): MutableList<Creation?> {
         return creationMultiCacheTemplate!!.getOne(1) as MutableList<Creation?>
     }
+
+    override fun getCreationById(id: Long?): Creation? {
+        return creationMultiCacheTemplate!!.getExactlyOne(0, id!!)
+    }
 }

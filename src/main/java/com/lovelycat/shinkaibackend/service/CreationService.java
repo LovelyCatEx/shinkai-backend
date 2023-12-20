@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CreationService extends IService<Creation> {
     List<Creation> getAllCreations();
+    Creation getCreationById(Long id);
 }

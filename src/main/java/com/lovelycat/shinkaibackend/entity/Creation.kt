@@ -3,6 +3,7 @@ package com.lovelycat.shinkaibackend.entity
 import com.baomidou.mybatisplus.annotation.IdType
 import com.baomidou.mybatisplus.annotation.TableId
 import com.baomidou.mybatisplus.annotation.TableName
+import com.fasterxml.jackson.annotation.JsonFormat
 import lombok.AllArgsConstructor
 import lombok.Data
 import lombok.NoArgsConstructor
@@ -16,6 +17,7 @@ data class Creation(
     val originName: String? = null,
     val description: String? = null,
     val descriptionShort: String? = null,
+    @JsonFormat(pattern = "yyyy-MM-dd")
     val publishedTime: Date? = null,
     val feature: String? = null,
     val featureVertical: String? = null) {}

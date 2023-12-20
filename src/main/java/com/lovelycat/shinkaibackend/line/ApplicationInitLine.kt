@@ -1,5 +1,6 @@
 package com.lovelycat.shinkaibackend.line
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.lovelycat.shinkaibackend.ShinkaiBackendApplication
 import com.lovelycat.shinkaibackend.entity.Creation
 import com.lovelycat.shinkaibackend.service.CreationService
@@ -40,7 +41,7 @@ class ApplicationInitLine : CommandLineRunner {
                         vararg args: Any?
                     ): Iterable<Creation?>? = when (strategy.id) {
                         0 -> creationService?.getById(args[0] as Long).toList()
-                        1 -> creationService?.list()
+                        1 -> creationService?.list(QueryWrapper<Creation>().orderByDesc("published_time"))
                         else -> TODO()
                     }
                 })
