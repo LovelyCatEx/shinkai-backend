@@ -1,12 +1,12 @@
 package com.lovelycat.shinkaibackend.line
 
-import com.alibaba.fastjson.JSON
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.lovelycat.shinkaibackend.ShinkaiBackendApplication
 import com.lovelycat.shinkaibackend.entity.Creation
 import com.lovelycat.shinkaibackend.entity.CreationCharacter
+import com.lovelycat.shinkaibackend.entity.CreationSection
 import com.lovelycat.shinkaibackend.mapper.CreationCharacterMapper
-import com.lovelycat.shinkaibackend.service.CreationCharacterService
+import com.lovelycat.shinkaibackend.mapper.CreationSectionMapper
 import com.lovelycat.shinkaibackend.service.CreationService
 import com.lovelycatv.arkcache.DataSourceProvider
 import com.lovelycatv.arkcache.strategy.CacheStorageStrategy
@@ -27,6 +27,9 @@ class ApplicationInitLine : CommandLineRunner {
 
     @Resource
     private var creationCharacterMapper: CreationCharacterMapper? = null
+
+    @Resource
+    private var creationSectionMapper: CreationSectionMapper? = null
 
     @Throws(Exception::class)
     override fun run(vararg args: String) {
@@ -72,6 +75,29 @@ class ApplicationInitLine : CommandLineRunner {
                         vararg args: Any?
                     ): Iterable<CreationCharacter?>? = when (strategy.id) {
                         0 -> creationCharacterMapper?.selectList(QueryWrapper<CreationCharacter>().eq("cid", args[0] as Long))
+                        else -> TODO()
+                    }
+                })
+            }
+        }
+
+        ShinkaiBackendApplication.cacheTemplateContainer.registerMultiTemplate(CreationSection::class.java) {
+            val strategy = CacheStorageStrategy(0, MutableCacheKey("creation-sections:?", object: MutableCacheKey.MutableKeyProvider<Iterable<CreationSection?>> {
+                override fun provide(keyFormat: String, vararg args: Any): String
+                        = keyFormat.replace("?", (args[0] as Long).toString())
+
+                override fun provideForSetValue(keyFormat: String, data: Iterable<CreationSection?>): String
+                        = keyFormat.replace("?", data.iterator().next()?.cid.toString())
+
+            }))
+            it.apply {
+                addStrategy(strategy)
+                it.customDataSource(object: DataSourceProvider<Iterable<CreationSection?>> {
+                    override fun provide(
+                        strategy: CacheStorageStrategy<Iterable<CreationSection?>>,
+                        vararg args: Any?
+                    ): Iterable<CreationSection?>? = when (strategy.id) {
+                        0 -> creationSectionMapper?.selectList(QueryWrapper<CreationSection>().eq("cid", args[0] as Long))
                         else -> TODO()
                     }
                 })
