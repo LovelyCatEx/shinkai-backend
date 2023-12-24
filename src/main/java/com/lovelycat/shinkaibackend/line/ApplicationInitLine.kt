@@ -2,9 +2,11 @@ package com.lovelycat.shinkaibackend.line
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.lovelycat.shinkaibackend.ShinkaiBackendApplication
+import com.lovelycat.shinkaibackend.entity.Comment
 import com.lovelycat.shinkaibackend.entity.Creation
 import com.lovelycat.shinkaibackend.entity.CreationCharacter
 import com.lovelycat.shinkaibackend.entity.CreationSection
+import com.lovelycat.shinkaibackend.mapper.CommentMapper
 import com.lovelycat.shinkaibackend.mapper.CreationCharacterMapper
 import com.lovelycat.shinkaibackend.mapper.CreationSectionMapper
 import com.lovelycat.shinkaibackend.service.CreationService
@@ -30,6 +32,9 @@ class ApplicationInitLine : CommandLineRunner {
 
     @Resource
     private var creationSectionMapper: CreationSectionMapper? = null
+
+    @Resource
+    private var commentMapper: CommentMapper? = null
 
     @Throws(Exception::class)
     override fun run(vararg args: String) {
@@ -98,6 +103,28 @@ class ApplicationInitLine : CommandLineRunner {
                         vararg args: Any?
                     ): Iterable<CreationSection?>? = when (strategy.id) {
                         0 -> creationSectionMapper?.selectList(QueryWrapper<CreationSection>().eq("cid", args[0] as Long))
+                        else -> TODO()
+                    }
+                })
+            }
+        }
+
+        ShinkaiBackendApplication.cacheTemplateContainer.registerMultiTemplate(Comment::class.java) {
+            val strategy = CacheStorageStrategy(0, MutableCacheKey("comments:?", object: MutableCacheKey.MutableKeyProvider<Iterable<Comment?>> {
+                override fun provide(keyFormat: String, vararg args: Any): String
+                    = keyFormat.replace("?", (args[0] as Long).toString())
+
+                override fun provideForSetValue(keyFormat: String, data: Iterable<Comment?>): String
+                        = keyFormat.replace("?", data.iterator().next()?.cid.toString())
+            }))
+            it.apply {
+                addStrategy(strategy)
+                it.customDataSource(object: DataSourceProvider<Iterable<Comment?>> {
+                    override fun provide(
+                        strategy: CacheStorageStrategy<Iterable<Comment?>>,
+                        vararg args: Any?
+                    ): Iterable<Comment?>? = when (strategy.id) {
+                        0 -> commentMapper?.selectList(QueryWrapper<Comment>().eq("cid", args[0] as Long).orderByDesc("published_time"))
                         else -> TODO()
                     }
                 })

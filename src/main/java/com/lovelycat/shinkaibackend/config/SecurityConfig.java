@@ -16,6 +16,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(registry -> {
             registry.requestMatchers("/creation/**").permitAll()
+                    .requestMatchers("/comment/**").permitAll()
                     .anyRequest().authenticated();
         });
 
