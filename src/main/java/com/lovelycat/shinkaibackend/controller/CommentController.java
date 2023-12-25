@@ -25,12 +25,12 @@ public class CommentController {
         }
     }
 
-    // TODO: PostMapping is not working...
-    @GetMapping("/new")
+    @PostMapping("/new")
     public Result<?> postNewComment(@RequestBody Comment comment) {
         comment.autoSetPublishedTime();
         commentService.postComment(comment);
         return Result.success("Unknown result");
     }
+
 
 }
