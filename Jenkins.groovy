@@ -35,7 +35,7 @@ node {
                                 sshTransfer(
                                         cleanRemote: false,
                                         excludes: '',
-                                        execCommand: 'sh jenkins_result/shinkai/startup.sh',
+                                        execCommand: 'cd jenkins_result/shinkai/ && sh startup.sh',
                                         execTimeout: 120000,
                                         flatten: false,
                                         makeEmptyDirs: false,
