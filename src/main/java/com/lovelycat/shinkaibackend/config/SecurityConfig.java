@@ -52,6 +52,8 @@ public class SecurityConfig {
 
         configuration.addAllowedOrigin("http://127.0.0.1:5173");
         configuration.addAllowedOrigin("http://localhost:5173");
+        configuration.addAllowedOrigin("http://sk.lovelycatv.cn");
+        configuration.addAllowedOrigin("https://sk.lovelycatv.cn");
         // When using cookies, allowed origins can not be *
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod("*");

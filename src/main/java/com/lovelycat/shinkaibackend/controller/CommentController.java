@@ -25,7 +25,7 @@ public class CommentController {
         }
     }
 
-    @PostMapping("/new")
+    @PostMapping("/post")
     public Result<?> postNewComment(@RequestBody Comment comment) {
         comment.autoSetPublishedTime();
         commentService.postComment(comment);
