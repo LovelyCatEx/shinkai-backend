@@ -2,13 +2,11 @@ package com.lovelycat.shinkaibackend.line
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.lovelycat.shinkaibackend.ShinkaiBackendApplication
-import com.lovelycat.shinkaibackend.entity.Comment
-import com.lovelycat.shinkaibackend.entity.Creation
-import com.lovelycat.shinkaibackend.entity.CreationCharacter
-import com.lovelycat.shinkaibackend.entity.CreationSection
+import com.lovelycat.shinkaibackend.entity.*
 import com.lovelycat.shinkaibackend.mapper.CommentMapper
 import com.lovelycat.shinkaibackend.mapper.CreationCharacterMapper
 import com.lovelycat.shinkaibackend.mapper.CreationSectionMapper
+import com.lovelycat.shinkaibackend.mapper.GalleryImageMapper
 import com.lovelycat.shinkaibackend.service.CreationService
 import com.lovelycatv.arkcache.DataSourceProvider
 import com.lovelycatv.arkcache.strategy.CacheStorageStrategy
@@ -35,6 +33,9 @@ class ApplicationInitLine : CommandLineRunner {
 
     @Resource
     private var commentMapper: CommentMapper? = null
+
+    @Resource
+    private var galleryImageMapper: GalleryImageMapper? = null
 
     @Throws(Exception::class)
     override fun run(vararg args: String) {
@@ -125,6 +126,22 @@ class ApplicationInitLine : CommandLineRunner {
                         vararg args: Any?
                     ): Iterable<Comment?>? = when (strategy.id) {
                         0 -> commentMapper?.selectList(QueryWrapper<Comment>().eq("cid", args[0] as Long).orderByDesc("published_time"))
+                        else -> TODO()
+                    }
+                })
+            }
+        }
+
+        ShinkaiBackendApplication.cacheTemplateContainer.registerMultiTemplate(GalleryImage::class.java) {
+            val strategy = CacheStorageStrategy(0, FixedCacheKey<Iterable<GalleryImage?>>("gallery:?"))
+            it.apply {
+                addStrategy(strategy)
+                it.customDataSource(object: DataSourceProvider<Iterable<GalleryImage?>> {
+                    override fun provide(
+                        strategy: CacheStorageStrategy<Iterable<GalleryImage?>>,
+                        vararg args: Any?
+                    ): Iterable<GalleryImage?>? = when (strategy.id) {
+                        0 -> galleryImageMapper?.selectList(QueryWrapper())
                         else -> TODO()
                     }
                 })

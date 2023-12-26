@@ -3,11 +3,9 @@ package com.lovelycat.shinkaibackend.config;
 import com.lovelycat.shinkaibackend.response.Result;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,26 +20,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         // No csrf
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.authorizeHttpRequests(registry -> {
-            registry.requestMatchers("/creation/**").permitAll()
-                    .requestMatchers("/comment/**").permitAll()
-                    .anyRequest().authenticated();
-        });
+        httpSecurity.authorizeHttpRequests(registry -> registry.requestMatchers("/creation/**").permitAll()
+                .requestMatchers("/comment/**").permitAll()
+                .requestMatchers("/gallery/**").permitAll()
+                .anyRequest().authenticated());
 
-        httpSecurity.formLogin(login -> {
-            login.loginProcessingUrl("/login")
-                    .defaultSuccessUrl("/loginSuccess")
-                    .failureUrl("/loginFailed")
-                    .successHandler((request, response, authentication) -> {
-                        response.setContentType("text/html;charset=UTF-8");
-                        response.getWriter().write(Result.success(authentication.getCredentials().getClass().getCanonicalName()).toJSONString());
-                    })
-                    .failureHandler((request, response, exception) -> {
-                        response.setContentType("text/html;charset=UTF-8");
-                        response.getWriter().write(Result.failed(Result.CODE_ERR_NOT_AUTHORIZED, exception.getMessage()).toJSONString());
-                        exception.printStackTrace();
-                    });
-        });
+        httpSecurity.formLogin(login -> login.loginProcessingUrl("/login")
+                .defaultSuccessUrl("/loginSuccess")
+                .failureUrl("/loginFailed")
+                .successHandler((request, response, authentication) -> {
+                    response.setContentType("text/html;charset=UTF-8");
+                    response.getWriter().write(Result.success(authentication.getCredentials().getClass().getCanonicalName()).toJSONString());
+                })
+                .failureHandler((request, response, exception) -> {
+                    response.setContentType("text/html;charset=UTF-8");
+                    response.getWriter().write(Result.failed(Result.CODE_ERR_NOT_AUTHORIZED, exception.getMessage()).toJSONString());
+                    exception.printStackTrace();
+                }));
 
         return httpSecurity.build();
     }
@@ -65,8 +60,6 @@ public class SecurityConfig {
 
         return new CorsFilter(configurationSource);
     }
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
