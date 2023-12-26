@@ -82,15 +82,15 @@
         <!--<dependency>
             <groupId>com.lovelycatv</groupId>
             <artifactId>ark-cache</artifactId>
-            <version>1.0.0-RELEASE</version>
+            <version>1.0.1-RELEASE</version>
         </dependency>-->
 
         <dependency>
             <groupId>com.lovelycatv</groupId>
             <artifactId>ark-cache</artifactId>
-            <version>1.0.0-RELEASE</version>
+            <version>1.0.1-RELEASE</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/ark-cache-1.0.0-RELEASE.jar</systemPath>
+            <systemPath>${project.basedir}/libs/ark-cache-1.0.1-RELEASE.jar</systemPath>
         </dependency>
 
         <!-- Kotlin -->

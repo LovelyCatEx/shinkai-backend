@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .failureUrl("/loginFailed")
                 .successHandler((request, response, authentication) -> {
                     response.setContentType("text/html;charset=UTF-8");
-                    response.getWriter().write(Result.success(authentication.getCredentials().getClass().getCanonicalName()).toJSONString());
+                    response.getWriter().write(Result.success("welcome back").toJSONString());
                 })
                 .failureHandler((request, response, exception) -> {
                     response.setContentType("text/html;charset=UTF-8");
